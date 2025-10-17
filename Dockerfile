@@ -4,20 +4,17 @@ FROM eclipse-temurin:21-jdk
 # Set working directory
 WORKDIR /app
 
-# Copy the project files
+# Copy project files
 COPY . .
 
-# Build the project (you can also skip tests)
 # Give mvnw permission to execute
 RUN chmod +x mvnw
 
-# Now build the project
+# Build the project and skip tests
 RUN ./mvnw clean package -DskipTests
 
-# Expose Render's assigned port
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "target/server-0.0.1-SNAPSHOT.jar"]
-
+# Expose the port defined in application.properties
+EXPOSE 5000
 
 # Run the jar
-CMD ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "target/server-0.0.1-SNAPSHOT.jar"]
