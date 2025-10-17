@@ -8,6 +8,10 @@ WORKDIR /app
 COPY . .
 
 # Build the project (you can also skip tests)
+# Give mvnw permission to execute
+RUN chmod +x mvnw
+
+# Now build the project
 RUN ./mvnw clean package -DskipTests
 
 # Expose Render's assigned port
