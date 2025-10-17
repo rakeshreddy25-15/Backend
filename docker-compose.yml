@@ -5,14 +5,28 @@ services:
     image: mysql:8.0
     container_name: studyleague-db
     environment:
-      MYSQL_ROOT_PASSWORD: Rakesh@123      # root password
-      MYSQL_DATABASE: studyleague              # your database name
-      MYSQL_USER: root           # user for your app
-      MYSQL_PASSWORD: Rakesh@123     # password for that user
+      MYSQL_ROOT_PASSWORD: Rakesh@123
+      MYSQL_DATABASE: studyleague
+      # Using root user only, so no additional MYSQL_USER/MYSQL_PASSWORD
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: studyleague-app
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: studyleague
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Rakesh@123
+      SERVER_PORT: 5000
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
 
 volumes:
   db_data:
