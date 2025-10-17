@@ -11,27 +11,28 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      retries: 5
-      timeout: 5s
+    networks:
+      - app-network
 
-  app:
+  backend:
     build: .
-    container_name: studyleague-app
+    container_name: studyleague-backend
     environment:
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: studyleague
-      MYSQL_USER: root
-      MYSQL_PASSWORD: Rakesh@123
-      SERVER_PORT: 5000
-    depends_on:
-      mysql:
-        condition: service_healthy
+      SPRING_DATASOURCE_URL: jdbc:mysql://studyleague-db:3306/studyleague?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Rakesh@123
+      SPRING_MAIL_USERNAME: rakeshreddy251507@gmail.com
+      SPRING_MAIL_PASSWORD: 1234567
     ports:
       - "5000:5000"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
 
 volumes:
   db_data:
+
+networks:
+  app-network:
+    driver: bridge
