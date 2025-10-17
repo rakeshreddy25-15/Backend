@@ -16,6 +16,8 @@ RUN ./mvnw clean package -DskipTests
 
 # Expose Render's assigned port
 EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "target/server-0.0.1-SNAPSHOT.jar"]
+
 
 # Run the jar
 CMD ["java", "-jar", "target/*.jar"]
