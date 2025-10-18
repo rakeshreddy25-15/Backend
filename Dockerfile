@@ -1,20 +1,25 @@
-# Use an official Java runtime as a parent image
+# Use official Java 21 JDK image
 FROM eclipse-temurin:21-jdk
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy project files
-COPY . .
+# Copy Maven wrapper and pom.xml first (for caching dependencies)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-# Give mvnw permission to execute
-RUN chmod +x mvnw
+# Download dependencies (this step is cached)
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
-# Build the project and skip tests
+# Copy the rest of the project files
+COPY src src
+
+# Build the project (skip tests for faster build)
 RUN ./mvnw clean package -DskipTests
 
-# Expose the port defined in application.properties
+# Expose the port your Spring Boot app uses
 EXPOSE 5000
 
-# Run the jar
+# Run the JAR file
 ENTRYPOINT ["java", "-jar", "target/server-0.0.1-SNAPSHOT.jar"]
